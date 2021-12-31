@@ -16,7 +16,7 @@ public class Order {
     private OrderState state;
     private ShippingInfo shippingInfo;
     private List<OrderLine> orderLines;
-    private int totalAmounts;
+    private Money totalAmounts;
 
     private String orderNumber; // 엔티티 식별자
 
@@ -63,7 +63,9 @@ public class Order {
     }
 
     private void calculateTotalAmounts() {
-        this.totalAmounts = orderLines.stream().mapToInt(OrderLine::getAmounts).sum();
+        this.totalAmounts = new Money(orderLines.stream()
+                .mapToInt(x ->
+                        x.getAmounts().getValue()).sum());
     }
 
     // 1 배송지 정보 변경하기

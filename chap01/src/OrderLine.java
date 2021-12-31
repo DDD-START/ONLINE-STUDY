@@ -1,21 +1,21 @@
 public class OrderLine {
     private Product product;
-    private int price; // 개당 가격
+    private Money price; // 개당 가격
     private int quantity; // 상품 개수
-    private int amounts; // 총금액
+    private Money amounts; // 총금액
 
-    public OrderLine(Product product, int price, int quantity) {
+    public OrderLine(Product product, Money price, int quantity) {
         this.product = product;
-        this.price = price;
+        this.price = new Money(price.getValue()); // 참조 투명성과 관련 문제 해결
         this.quantity = quantity;
         this.amounts = calculateAmounts();
     }
 
-    private int calculateAmounts() { // 총 금액 계산
-        return price * quantity;
+    private Money calculateAmounts() { // 총 금액 계산
+        return price.multiply(quantity);
     }
 
-    public int getAmounts() {
-        return price * quantity;
+    public Money getAmounts() {
+        return amounts;
     }
 }
