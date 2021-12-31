@@ -18,7 +18,7 @@ public class Order {
     private List<OrderLine> orderLines;
     private Money totalAmounts;
 
-    private String orderNumber; // 엔티티 식별자
+    private OrderNo id; // 엔티티 식별자
 
     @Override
     public boolean equals(Object obj) {
@@ -26,15 +26,15 @@ public class Order {
         if (obj== null) return false;
         if (obj.getClass() != Order.class) return false;
         Order other = (Order)obj;
-        if (this.orderNumber == null) return false;
-        return this.orderNumber.equals(other.orderNumber);
+        if (this.id == null) return false;
+        return this.id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((orderNumber == null) ? 0 : orderNumber.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
