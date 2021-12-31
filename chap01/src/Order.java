@@ -18,14 +18,22 @@ public class Order {
     private List<OrderLine> orderLines;
     private int totalAmounts;
 
-    public Order(List<OrderLine> orderLines) {
+    public Order(List<OrderLine> orderLines, ShippingInfo shippingInfo) {
         setOrderLines(orderLines);
+        setShippingInfo(shippingInfo); //
+    }
+
+    private void setShippingInfo(ShippingInfo shippingInfo) {
+        if (shippingInfo == null)
+            throw new IllegalArgumentException("no shipping info");
+        this.shippingInfo = shippingInfo;
     }
 
     private void setOrderLines(List<OrderLine> orderLines) {
         verifyAtLeastOneOrMoreOrderLines(orderLines); // 요구사항 1: 최소 1개 이상
         this.orderLines = orderLines;
         calculateTotalAmounts(); // 요구사항 3: 총 주문 합계 계산
+
     }
 
     private void verifyAtLeastOneOrMoreOrderLines(List<OrderLine> orderLines) {
@@ -40,15 +48,13 @@ public class Order {
 
     // 1 배송지 정보 변경하기
     public void changeShippingInfo(ShippingInfo newShippingInfo) { // 규칙1: 배송지 변경
-        if (!isShippingChangeable()) {
-            throw new IllegalStateException("can’t change shipping in" + state);
-        }
+        verifyNotYetShipped();
         this.shippingInfo = newShippingInfo;
     }
 
-    private boolean isShippingChangeable() {
-        return state == OrderState.PAYMENT_WAITING ||
-                state == OrderState.PREPARING;
+    private void verifyNotYetShipped() { // 리팩토링: isShippingChangeable에서 변경
+        if (state != OrderState.PAYMENT_WAITING & state != OrderState.PREPARING)
+            throw new IllegalStateException("aleady shipped");
     }
 
     // 2 출고 상태로 변경하기
@@ -59,7 +65,8 @@ public class Order {
 
     // 3 주문 취소하기
     public void cancel() {
-        // ...
+        verifyNotYetShipped();
+        this.state = OrderState.CANCELED;
     }
 
     // 4 결제완료로 변경하기
