@@ -1,3 +1,4 @@
+import java.util.List;
 
 /*
 < 주문 관련 요구 사항 >
@@ -5,7 +6,7 @@
 2. 한 상품을 한개 이상 주문할 수 있다 .
 3. 총 주문 금액은 각 상품의 구매 가격합을 모두 더한 금액 이다 .
 4. 각 상품의 구매 가격 합은 상품 가격에 구매 개수를 곱한 값 이다 .
-5. 주문할 때 배송지 정보를 반드시 지정해야 한 다 .
+5. 주문할 때 배송지 정보를 반드시 지정해야 한다 .
 6. 배송지 정보는 받는 사람 이름, 전화번호, 주소로 구성 된다 .
 7. 출고를 하면 배송지 정보를 변경 할 수 없다 .
 8. 출고 전에 주문을 취소할 수 있다 .
@@ -14,6 +15,28 @@
 public class Order {
     private OrderState state;
     private ShippingInfo shippingInfo;
+    private List<OrderLine> orderLines;
+    private int totalAmounts;
+
+    public Order(List<OrderLine> orderLines) {
+        setOrderLines(orderLines);
+    }
+
+    private void setOrderLines(List<OrderLine> orderLines) {
+        verifyAtLeastOneOrMoreOrderLines(orderLines); // 요구사항 1: 최소 1개 이상
+        this.orderLines = orderLines;
+        calculateTotalAmounts(); // 요구사항 3: 총 주문 합계 계산
+    }
+
+    private void verifyAtLeastOneOrMoreOrderLines(List<OrderLine> orderLines) {
+        if (orderLines == null || orderLines.isEmpty()) {
+            throw new IllegalArgumentException("no OrderLine");
+        }
+    }
+
+    private void calculateTotalAmounts() {
+        this.totalAmounts = orderLines.stream().mapToInt(OrderLine::getAmounts).sum();
+    }
 
     // 1 배송지 정보 변경하기
     public void changeShippingInfo(ShippingInfo newShippingInfo) { // 규칙1: 배송지 변경
